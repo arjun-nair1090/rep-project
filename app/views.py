@@ -20,6 +20,7 @@ import csv
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.paginator import Paginator
 import xlwt
+from django.db.models import Q
 
 # Create your views here.
 
@@ -121,7 +122,8 @@ def login(request):
             if user:
                 encryptedpassword = make_password(password)
                 checkpassword = check_password(password, user.password)
-                if check_password:
+                
+                if checkpassword:
                     if user.status:
                         msg = "Logged In user " + user.name
                         request.session["id"] = user.id
@@ -236,7 +238,10 @@ def sku_items(request, page=1):
                 sku_list = SKUItems.objects.all()
             else:
                 return redirect("invoices")
-            #
+
+            query = request.GET.get("query", "")
+            
+            sku_list = sku_list.filter(Q(sku_name__icontains=query) | Q(sku_serial_no__icontains=query)).order_by('sku_name')     
             paginator = Paginator(sku_list, 25)
             page_number = page
             sku_obj = paginator.get_page(page_number)
@@ -849,3 +854,32 @@ def get_company_list(request):
             return render(request, "doshi/companies.html", {"company_data": companies})
     else:
         return redirect("login")
+
+
+# def listing_sku_api(request):
+#     if "id" in request.session:
+#         page_number = request.GET.get("page", 1)
+#         startswith = request.GET.get("startswith", "")
+#         sku_list = SKUItems.objects.filter(sku_name__startswith=startswith).order_by('sku_name')
+#         paginator = Paginator(sku_list, 25)
+#         page_obj = paginator.get_page(page_number)
+
+#         data = [{
+#                     "sku-name": i.sku_name,
+#                     "sku-qty": i.sku_qty
+#                 } 
+#                 for i in page_obj.object_list
+#                 ]
+
+#         payload = {
+#             "page":{
+#                 "current": page_obj.number,
+#                 "has_next":page_obj.has_next(),
+#                 "has_previous":page_obj.has_previous()
+#             },
+#             "data": data
+#         }
+#         return JsonResponse(payload)
+#     else:
+#         return redirect("login")
+
