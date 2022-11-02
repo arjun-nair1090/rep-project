@@ -97,6 +97,7 @@
                         <th>Rate</th>
                         <th>Amount</th>
                         <th>Base Qty</th>
+                        <th>Pallet Qty</th>
                         {% endif %}
                         <th>Barcode No</th>
                         {% comment %} <th>Download</th> {% endcomment %}
@@ -117,6 +118,7 @@
                         <td>{{ stk.sku_amount }}</td>
                         
                         <td>{{ stk.sku_base_qty }}</td>
+                        <td>{{ stk.sku_pallet_qty }}</td>
                         {% endif %}
                         <td>{{ stk.sku_serial_no }}</td>
                         
@@ -327,7 +329,7 @@
 
         $('#exampleInputSKU').val($tds2.text());
         $('#exampleInputBaseQty').val($tds6.text());
-        $('#exampleInputBarcode').val($tds7.text());
+        $('#exampleInputPalletQty').val($tds7.text());
       
       });
 
