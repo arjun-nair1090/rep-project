@@ -477,7 +477,7 @@ def verify_invoice(request):
                 # else:
                 #     raise Exception("S.K.U. scanning completed")
 
-                return JsonResponse({"status": "success", "msg": "S.K.U. mapped"})
+                return JsonResponse({"status": "success", "msg": "S.K.U. mapped", "status-sku": get_invoice_item[0].invoice_item_scanned_status,  "amount": str(sample), "skuid": get_sku.id})
 
             else:
                 if get_sku_id_list:

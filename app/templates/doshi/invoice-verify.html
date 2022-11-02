@@ -130,7 +130,7 @@
                         <td>{{ forloop.counter }}</td>
                         <td>{{ srno.sku_name }}</td>
                         <td>
-                          <span id="tscan" class="{{stk.invoice_item_id}}" style="color:blue">{{ stk.invoice_item_total_scan }}</span>/{{ stk.invoice_item_qty }}
+                          <span id="tscan-{{stk.invoice_item_id}}" class="{{stk.invoice_item_id}}" style="color:blue">{{ stk.invoice_item_total_scan }}</span>/{{ stk.invoice_item_qty }}
                         </td>
                         {% comment %} <td>{{ stk.invoice_item_rate }}</td>
                         <td>{{ stk.invoice_item_amount }}</td> {% endcomment %}
@@ -138,7 +138,7 @@
                         <td id="">{{ srno.sku_serial_no }}</td>
                         {% if stk.invoice_item_scanned_status == "COMPLETED" %}
                         <td>
-                          <h6>
+                          <h6 id="status-{{stk.invoice_item_id}}">
                             <span class="badge rounded-pill badge-success"
                               >completed</span
                             >
@@ -146,7 +146,7 @@
                         </td>
                         {% elif stk.invoice_item_scanned_status == "PENDING" %}
                         <td>
-                          <h6>
+                          <h6 id="status-{{stk.invoice_item_id}}">
                             <span class="badge rounded-pill badge-danger"
                               >pending</span
                             >
@@ -387,12 +387,19 @@
               success: function (val) {
                 console.log(val);
                 if (val["status"] === "success") {
-                  location.reload();
+                  console.log("Value : ", val);
                   //console.log(val);
+                  $("#tscan-"+val["skuid"]).html(val["amount"]);
                   
-                  // delete the row with barcode id
-                  // append row with new data
-                  // clear searchbar field
+                  if (val["status-sku"] === "COMPLETED") {
+                    $("#status-"+val["skuid"]).html('<span class="badge rounded-pill badge-success">completed</span>');
+                  }
+                  else if (val["status-sku"] === "PENDING") {
+                    $("#status-"+val["skuid"]).html('<span class="badge rounded-pill badge-danger">pending</span>');
+                  }
+                  else {
+                    $("#status-"+val["skuid"]).html('<span class="badge rounded-pill badge-warning">extra</span>');
+                  }
                   
                 } else if (val["status"] === "warning") {
                   v = $("#pending_sku_list").val();
