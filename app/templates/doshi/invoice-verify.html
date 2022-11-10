@@ -344,24 +344,11 @@
       });
     </script>
 
-      {% comment %}     
-        <script>
-          $('.edit').click(function(){
-            var invoice_item_id = $(this).attr('data-invoice-item-id');
-            $('#scan-' + invoice_item_id).attr("contenteditable", "true");
-            var invoice_item_total_scan = $("#scan-" + invoice_item_id).html();
-            console.log(invoice_item_total_scan, invoice_item_id);
-            $('#scan-' + invoice_item_id).attr("contenteditable", "false");
-          })
-        </script>
-     {% endcomment %}
-
     <script>
       $(document).ready(function (val) {
         // console.log("hello");
         //$("#barcodeInput").focus();
         $("#barcodeInput").on("input", function (e) {
-          //Fetch form to apply custom Bootstrap validation
           $("#barcodeInput").removeClass("is-invalid");
           $("#error-alert").remove();
 
@@ -370,7 +357,6 @@
           // post data for server
           var check_sku = $("#1").text();
           var barcode_no = $(this).val().trim();
-          // TODO: Replace input hidden with variable
           var invoice_no = $("#invoice-no").val();
           
           var pallet_wise = $("#invoice-no-"+barcode_no).is(":checked");
@@ -378,7 +364,6 @@
           if (!form[0].checkValidity()) {
             e.preventDefault();
             e.stopPropagation();
-            // TODO: Remove all console.log
           }
           else
           {

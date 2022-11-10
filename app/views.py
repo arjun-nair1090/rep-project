@@ -433,8 +433,6 @@ def verify_invoice(request):
                 invoice_no=invoice_no,
                 invoice_item_scanned_status__in=["PENDING", "EXTRA"],
             )
-            # if not check_invoice.exists():
-            #     raise Exception("All S.K.U's scanning completed")
 
             get_sku = SKUItems.objects.get(
                 sku_serial_no=request.POST["barcode"])
@@ -453,7 +451,6 @@ def verify_invoice(request):
                     "EXTRA",
                     "COMPLETED",
                 ]:
-                    # get_invoice_item.update(invoice_item_total_scan = F("invoice_item_total_scan") + 1)
 
                     if pallet == "false":
                         sample = (
@@ -483,9 +480,7 @@ def verify_invoice(request):
                             invoice_user=request.session["id"],
                         )
 
-                # else:
-                #     raise Exception("S.K.U. scanning completed")
-
+                
                 return JsonResponse({"status": "success", "msg": "S.K.U. mapped", "status-sku": get_invoice_item[0].invoice_item_scanned_status,  "amount": str(sample), "skuid": get_sku.id})
 
             else:
