@@ -79,10 +79,10 @@ WSGI_APPLICATION = "doshi.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "djongo",
-        "NAME": "doshi",
+        "NAME": "doshi-test",
         "ENFORCE_SCHEMA": False,
         "CLIENT": {
-            "host": "mongodb+srv://doshiprod:doshi@cluster0.ze54zmc.mongodb.net/doshi",
+            "host": "mongodb+srv://doshitest:doshitest@doshi-test.m83kzxq.mongodb.net/doshi-test",
         },
     },
 }

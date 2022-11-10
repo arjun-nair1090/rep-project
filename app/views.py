@@ -425,7 +425,9 @@ def verify_invoice(request):
 
         try:
             invoice_no = request.POST["invoice"]
-            print(request.POST)
+            pallet = request.POST["pallet"]
+
+            print(f"{request.POST=}")
 
             check_invoice = Invoice.objects.filter(
                 invoice_no=invoice_no,
@@ -453,7 +455,7 @@ def verify_invoice(request):
                 ]:
                     # get_invoice_item.update(invoice_item_total_scan = F("invoice_item_total_scan") + 1)
 
-                    if get_sku.sku_pallet_qty == 0:
+                    if pallet == "false":
                         sample = (
                             get_invoice_item[0].invoice_item_total_scan
                             + get_sku.sku_base_qty
@@ -761,17 +763,19 @@ def update_sku(request):
     if "id" in request.session:
         try:
             if request.method == "POST":
-                sku_serial_no = request.POST["update-sku-srno"]
                 sku_name = request.POST["update-sku-name"]
                 sku_base_qty = request.POST["update-sku-qty"]
                 sku_pallet_qty = request.POST["update-sku-pallet-qty"]
 
-                sku_item = SKUItems.objects.get(sku_serial_no=sku_serial_no)
+                print(f"{request.POST=}")
+
+                sku_item = SKUItems.objects.get(sku_name=sku_name)
                 sku_name_before = sku_item.sku_name
                 sku_base_qty_before = sku_item.sku_base_qty
                 sku_item.sku_name = sku_name
                 sku_item.sku_base_qty = sku_base_qty
                 sku_item.sku_pallet_qty = sku_pallet_qty
+                
                 sku_item.save()
 
                 user_id = request.session["id"]

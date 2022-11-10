@@ -256,7 +256,7 @@
                 </label> {% endcomment %}
                 <div class="col-sm-10">
                   <input
-                    type="text"
+                    type="number"
                     class="form-control form-control-sm"
                     id = "exampleInputBarcode"
                     name="update-sku-srno"
@@ -321,11 +321,10 @@
 
       $(".update").click(function(){
         var $row = $(this).closest("tr");
-        //console.log($row);
+
         $tds2 = $row.find("td:nth-child(2)");
         $tds6 = $row.find("td:nth-child(6)");
         $tds7 = $row.find("td:nth-child(7)");
-        console.log($tds2.text(), $tds6.text(), $tds7.text());
 
         $('#exampleInputSKU').val($tds2.text());
         $('#exampleInputBaseQty').val($tds6.text());

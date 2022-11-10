@@ -116,6 +116,7 @@
                         <th>S.K.U. Item Amount</th> {% endcomment %}
                         <th>S.K.U. Base Quantity</th>
                         <th>Barcode</th>
+                        <th>Pallet Wise</th>
                         <th>Status</th>
                         {% comment %} <th>Action</th> {% endcomment %}
                         {% if request.session.role == "DISPATCHER" %}
@@ -136,6 +137,15 @@
                         <td>{{ stk.invoice_item_amount }}</td> {% endcomment %}
                         <td>{{srno.sku_base_qty}}</td>
                         <td id="">{{ srno.sku_serial_no }}</td>
+                        <td>
+                          <input
+                            type="checkbox"
+                            name="invoice"
+                            class="check-pallet-wise"
+                            id="invoice-no-{{srno.sku_serial_no}}"
+                            value="{{invoice_no}}"
+                          />
+                        </td>
                         {% if stk.invoice_item_scanned_status == "COMPLETED" %}
                         <td>
                           <h6 id="status-{{stk.invoice_item_id}}">
@@ -362,17 +372,16 @@
           var barcode_no = $(this).val().trim();
           // TODO: Replace input hidden with variable
           var invoice_no = $("#invoice-no").val();
-
+          
+          var pallet_wise = $("#invoice-no-"+barcode_no).is(":checked");
 
           if (!form[0].checkValidity()) {
             e.preventDefault();
             e.stopPropagation();
             // TODO: Remove all console.log
-            console.log("Not going anywhere....")
           }
           else
           {
-            console.log("going to server....");
 
             $.ajax({
               type: "POST",
@@ -380,15 +389,14 @@
               data: {
                 "invoice": invoice_no,
                 "barcode": barcode_no,
-                // TODO: Remove check sku logic
+                "pallet": pallet_wise,
                 "check-sku": check_sku,
                 "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
               },
               success: function (val) {
                 console.log(val);
                 if (val["status"] === "success") {
-                  console.log("Value : ", val);
-                  //console.log(val);
+                  
                   $("#tscan-"+val["skuid"]).html(val["amount"]);
                   
                   if (val["status-sku"] === "COMPLETED") {
@@ -499,6 +507,13 @@
       }
         })
         
+      })
+    </script>
+      
+    <script>
+      $(".check-pallet-wise").change(function() {
+        console.log($(this).attr('id'));
+        console.log($(this).is(":checked"));
       })
     </script>
   </body>
