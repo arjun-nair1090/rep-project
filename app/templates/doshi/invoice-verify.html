@@ -380,6 +380,7 @@
               },
               success: function (val) {
                 console.log(val);
+                $('#barcodeInput').val("");
                 if (val["status"] === "success") {
                   
                   $("#tscan-"+val["skuid"]).html(val["amount"]);
