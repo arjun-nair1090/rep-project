@@ -12,3 +12,4 @@ BypassData.csv
 Procfile
 .vscode
 db.sqlite3
+doshi/.env
