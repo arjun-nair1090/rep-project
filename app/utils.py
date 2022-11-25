@@ -1,8 +1,7 @@
 from threading import Thread
-from barcode import EAN13, generate
+from barcode import EAN13
 from random import randint
 from .models import *
-from io import BytesIO
 from barcode.writer import ImageWriter
 from django.conf import settings
 import os
@@ -12,7 +11,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import date
 from zipfile import ZipFile
 import csv
-import boto3
 
 
 class EmailThread(Thread):
@@ -52,11 +50,8 @@ class GenerateBRCode(Thread):
                     pass
             except Exception as ep:
 
-                print(ep)
-
                 filename = f"{sku.sku_serial_no}.jpg"
                 filepath = f"/media/barcode/{filename}"
-                print(os)
 
                 with open(filepath, "wb") as f:
                     EAN13(sku.sku_serial_no, writer=ImageWriter()).write(f)
@@ -70,14 +65,9 @@ def generate_BRC():
     sku_list = SKUItems.objects.all()
 
     for sku in sku_list:
-        # filename =  generate_barcode(sku.sku_serial_no)
         filepath = "{}.jpg".format(sku.sku_serial_no)
-        # filepath = os.path.join()
-        # s3 = boto3.client("s3",  aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-        # s3.upload_file(Filename=f"./media/barcode/{filename}",Bucket=settings.AWS_STORAGE_BUCKET_NAME,Key=f"{filename}")
 
         sku.sku_barcode_image = os.path.join(settings.MEDIA_ROOT, filepath)
-        # print(sku.sku_barcode_image)
         sku.save()
 
 
@@ -111,8 +101,7 @@ def zipBarcodes():
 def sendEmailReport():
     """send email to every user in database"""
 
-    user_email = "bhavesh@farintsol.com"  # User.objects.values("email")
-    # user_email_list = [i.get("email") for i in user_email]
+    user_email = "djangodeveloper09@gmail.com"
 
     today_date = date.today().strftime("%Y-%m-%d")
 

@@ -183,8 +183,7 @@
       tabindex="-1"
       role="dialog"
       aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
+      aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -305,17 +304,6 @@
 
     <!-- Page level custom scripts -->
     <script src="{% static 'assets/js/demo/datatables-demo.js' %}"></script>
-
-    {% comment %} <script>
-      var stockData = document.getElementById("stockDataTable");
-      for (var i = 1; i < stockData.rows.length; i++) {
-        stockQty = stockData.rows[i].cells.item(2).innerHTML;
-        stockRate = stockData.rows[i].cells.item(3).innerHTML;
-        stockData.rows[i].cells.item(4).innerHTML = (
-          stockQty * stockRate
-        ).toFixed(3);
-      }
-    </script> {% endcomment %}
 
     <script>
 

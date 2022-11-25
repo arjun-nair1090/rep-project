@@ -16,5 +16,3 @@ def validate_name(value):
         raise ValidationError(_('Name must contains alphabets only'), params={'value': value})
     else:
         return value
-
-

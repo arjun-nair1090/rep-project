@@ -9,3 +9,6 @@ doshi/__pycache__/
 .vscode/settings.json
 sku.csv
 BypassData.csv
+Procfile
+.vscode
+db.sqlite3
