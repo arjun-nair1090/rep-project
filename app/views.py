@@ -368,6 +368,9 @@ def invoice_verify(request, invoice_no):
 
     invoice_sku_list = Invoice.objects.filter(invoice_no=str(invoice_no))
 
+    invoice_party_name = invoice_sku_list[0].invoice_party_name
+    invoice_date = invoice_sku_list[0].invoice_date
+
     pending_invoice_barcode_list = [
         i.invoice_item_id for i in invoice_sku_list]
     pending_sku_names = SKUItems.objects.filter(
@@ -396,6 +399,8 @@ def invoice_verify(request, invoice_no):
                     "invoice_sku_list": invoice_sku,
                     "invoice_no": invoice_no,
                     "pending_sku_names": pending_sku_names,
+                    "invoice_company": invoice_party_name,
+                    "invoice_date": invoice_date,
                 },
             )
     return redirect("invoices")

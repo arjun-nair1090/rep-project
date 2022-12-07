@@ -65,9 +65,10 @@
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
               <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">
-                  Invoice no : {{invoice_no}}
+                <h6 style="text-align:left;float:left;" class="m-0 font-weight-bold text-primary">
+                  Invoice no : {{invoice_no}} | Company Name : {{invoice_company}} | Invoice Date : {{invoice_date}}
                 </h6>
+                <br>
                 <input
                   type="hidden"
                   name="invoice"
@@ -338,7 +339,7 @@
         $("#invoiceVerifyDataTable").DataTable({
           lengthMenu: [
             [5, 10, 25, -1],
-            [5, 10, 25, "All"],
+            ["All"],
           ],
         });
       });
