@@ -17,6 +17,7 @@ urlpatterns = [
     path("invoices/", invoices, name="invoices"),
     
     path("all-invoices/", get_all_invoices, name="all-invoices"),
+    path("api/all-invoices/", api_get_all_invoices, name="api-all-invoices"),
     path("invoices/invoice-verify/<invoice_no>", invoice_verify, name="invoice-verify"),
     path("invoices/dispatch-invoice/", dispatch_invoice, name="dispatch-invoice"),
     

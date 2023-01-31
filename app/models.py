@@ -2,7 +2,7 @@ from django.db.models import *
 from django.core.validators import validate_email
 from django.contrib.auth.password_validation import validate_password
 from .validators import *
-from datetime import date
+from django.utils import timezone, dates
 
 
 class User(Model):
@@ -131,7 +131,7 @@ class ByPassModel(Model):
         blank=True,
         related_name="bypass_against_sku_name",
     )
-    bypass_date = DateField(default=date.today())
+    bypass_date = DateField(auto_now_add=True)
     bypass_time = TimeField(auto_now_add=True)
     # bypass_by = ForeignKey(invoice_user, on_delete=SET_NULL, default=None, blank=True)
 

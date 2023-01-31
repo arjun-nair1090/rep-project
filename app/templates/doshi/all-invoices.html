@@ -78,7 +78,7 @@
                     </thead>
 
                     <tbody>
-                      {% for invoice, status in invoices %}
+                      {% comment %} {% for invoice, status in invoices %}
                       <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ invoice.invoice_no }}</td>
@@ -117,7 +117,7 @@
                           
                         </td>
                       </tr>
-                      {% endfor %}
+                      {% endfor %} {% endcomment %}
                     </tbody>
                   </table>
                 </div>
@@ -202,9 +202,56 @@
     <script>
       $(document).ready(function () {
         $("#allInvoiceDataTable").DataTable({
-          "lengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]]
+          lengthMenu: [[5, 10, 25], [5, 10, 25]],
+          orderCellsTop: true,
+          fixedHeader: true,
+          serverSide: true,
+          deferRender: true, // deferred rendering for speed
+          ordering: false,
+          ajax: {
+                "processing" : true,
+                "url" : "{% url 'api-all-invoices' %}",
+              },
+              columns:[
+                  // { "data": "log_emp_id"},
+                  { "data": "index"},
+                  { "data": "invoice_no"},
+                  { "data": "invoice_party_name"},
+                  { "data": "invoice_date"},
+                  { "data": "invoice_total_amount"},
+                  { "data" : "status"},
+                  { "data": "invoice_no",
+                  render: function(data){
+                    console.log(data);
+                    return `<a href="invoice-details/${data}" class="btn btn-sm btn-info" role="button">View</a>`
+                  }
+                }
+                
+                  /*
+                  { 
+                    "data" "invoice_no",
+                    
+                    render: function(data){
+                      console.log(data)
+                      return `<button id="update-btn" onclick="updatefun('${data}')" data-uid="${data}" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#UpdateModal">View</Button>`
+                    },
+                  */
+                  /*
+                  {
+                    "data": "id",
+                    render: function(data){
+                      console.log(data)
+                      return `<button id="update-btn" onclick="updatefun('${data}')" data-uid="${data}" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#UpdateModal">View</Button>`
+                    },
+                    "orderable": false
+                  }
+                */
+              ],
+
+            })
+            $(".dataTables_length select").addClass("form-select form-select-sm");
+      
         });
-      });
       
     </script>
   </body>

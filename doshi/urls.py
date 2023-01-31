@@ -7,7 +7,8 @@ from django.conf.urls import url
 
 urlpatterns = [
     path('doshi-admin/', admin.site.urls),
-    path('', include('app.urls'))
+    path('', include('app.urls')),
+    path('__debug__/', include('debug_toolbar.urls')),
 ]
 
 

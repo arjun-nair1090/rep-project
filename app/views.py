@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.core.paginator import Paginator
 import xlwt
 from django.db.models import Q
+from django.core.paginator import PageNotAnInteger, Paginator, EmptyPage
 
 
 def index(request):
@@ -267,27 +268,68 @@ def get_all_invoices(request):
             return redirect("sku-items", page=1)
         else:
 
-            invoices = (
-                Invoice.objects.all()
-                .values(
-                    "invoice_no",
-                    "invoice_party_name",
-                    "invoice_date",
-                    "invoice_total_amount",
-                )
-                .distinct()
-            )
+            invoices = (Invoice.objects.all().values("invoice_no","invoice_party_name","invoice_date", "invoice_total_amount").distinct()[:3])
 
-            get_all_status = [invoice_status(
-                i["invoice_no"]) for i in invoices]
-            bypass_data = zip(invoices, get_all_status)
+            # get_all_status = [ invoice_status(i["invoice_no"]) for i in invoices ]
+            # bypass_data = zip(invoices, get_all_status)
             return render(
                 request,
-                "doshi/all-invoices.html",
-                {"invoices": bypass_data, "get_all_status": get_all_status},
+                "doshi/all-invoices.html", {}
+                # {"invoices": bypass_data, "get_all_status": get_all_status},
             )
 
     return redirect("login")
+
+
+def api_get_all_invoices(request):
+    print(request.is_ajax)
+    try:
+        if request.is_ajax or request.method == "GET":
+            # parameters from datatable
+            dtbl_draw = int(request.GET['draw'])
+            dtbl_start = int(request.GET['start'])
+            dtbl_length = int(request.GET['length'])
+            dtbl_search_value = request.GET['search[value]']
+            #print(dtbl_draw, dtbl_search_value, dtbl_draw, dtbl_length)
+            get_invoices = Invoice.objects.all().values("invoice_no", "invoice_party_name", "invoice_date", "invoice_total_amount").distinct()
+            
+            total_invoices = len(get_invoices)
+            total_filtered_invoices = total_invoices
+
+            if dtbl_search_value:
+                get_invoices = Invoice.objects.filter(Q(invoice_no__icontains=dtbl_search_value) | Q(invoice_party_name__icontains=dtbl_search_value))
+                total_invoices = len(get_invoices)
+                total_filtered_invoices = total_invoices
+
+            # add status for invoices
+            for i, invoice in enumerate(get_invoices, start=1):
+                invoice['status'] = invoice_status(invoice["invoice_no"])
+                invoice['index'] = i
+            
+            # Paginator
+            paginator = Paginator(get_invoices, dtbl_length)
+            page_number = dtbl_start / dtbl_length + 1
+            
+            try:
+                object_list = paginator.page(page_number).object_list
+            except PageNotAnInteger:
+                object_list = paginator.page(1).object_list
+            except EmptyPage:
+                 object_list = paginator.page(1).object_list
+
+
+            context = {
+                'draw': dtbl_draw,
+                'recordsTotal': total_invoices,
+                'recordsFiltered': total_filtered_invoices,
+                'data' : object_list
+            }
+            return JsonResponse(context, safe=False, status=200)
+        else:
+            return JsonResponse({"error": "Unauthorised User"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
 
 
 def invoices(request):
