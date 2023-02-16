@@ -8,7 +8,6 @@ from .utils import *
 from datetime import date
 import csv
 from django.contrib.auth.hashers import make_password, check_password
-from django.core.paginator import Paginator
 import xlwt
 from django.db.models import Q
 from django.core.paginator import PageNotAnInteger, Paginator, EmptyPage
@@ -266,46 +265,33 @@ def get_all_invoices(request):
         role = request.session["role"]
         if role in ["CLIENT_HCH", "CLIENT"]:
             return redirect("sku-items", page=1)
-        else:
-
-            invoices = (Invoice.objects.all().values("invoice_no","invoice_party_name","invoice_date", "invoice_total_amount").distinct()[:3])
-
-            # get_all_status = [ invoice_status(i["invoice_no"]) for i in invoices ]
-            # bypass_data = zip(invoices, get_all_status)
-            return render(
-                request,
-                "doshi/all-invoices.html", {}
-                # {"invoices": bypass_data, "get_all_status": get_all_status},
-            )
+        return render(request, "doshi/all-invoices.html", {})
 
     return redirect("login")
 
 
 def api_get_all_invoices(request):
-    print(request.is_ajax)
+    
     try:
-        if request.is_ajax or request.method == "GET":
+        if request.is_ajax:
             # parameters from datatable
             dtbl_draw = int(request.GET['draw'])
             dtbl_start = int(request.GET['start'])
             dtbl_length = int(request.GET['length'])
             dtbl_search_value = request.GET['search[value]']
-            #print(dtbl_draw, dtbl_search_value, dtbl_draw, dtbl_length)
-            get_invoices = Invoice.objects.all().values("invoice_no", "invoice_party_name", "invoice_date", "invoice_total_amount").distinct()
             
+            # List all invoices 
+            get_invoices = Invoice.objects.all().order_by('invoice_no').values("invoice_no", "invoice_party_name", "invoice_date", "invoice_total_amount").distinct()
+
+            if dtbl_search_value:
+                get_invoices = Invoice.objects.filter(
+                    Q(invoice_no__icontains=dtbl_search_value) | Q(invoice_party_name__icontains=dtbl_search_value)
+                    ).values("invoice_no", "invoice_party_name", "invoice_date", "invoice_total_amount").distinct()
+
+            # Count total invoices and filtered invoices 
             total_invoices = len(get_invoices)
             total_filtered_invoices = total_invoices
 
-            if dtbl_search_value:
-                get_invoices = Invoice.objects.filter(Q(invoice_no__icontains=dtbl_search_value) | Q(invoice_party_name__icontains=dtbl_search_value))
-                total_invoices = len(get_invoices)
-                total_filtered_invoices = total_invoices
-
-            # add status for invoices
-            for i, invoice in enumerate(get_invoices, start=1):
-                invoice['status'] = invoice_status(invoice["invoice_no"])
-                invoice['index'] = i
-            
             # Paginator
             paginator = Paginator(get_invoices, dtbl_length)
             page_number = dtbl_start / dtbl_length + 1
@@ -317,7 +303,11 @@ def api_get_all_invoices(request):
             except EmptyPage:
                  object_list = paginator.page(1).object_list
 
-
+            # add status for invoices
+            for i, invoice in enumerate(object_list, start=1):
+                invoice['status'] = invoice_status(invoice["invoice_no"])
+                invoice['index'] = dtbl_start + i
+            
             context = {
                 'draw': dtbl_draw,
                 'recordsTotal': total_invoices,

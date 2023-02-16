@@ -64,7 +64,6 @@ class SKUItems(Model):
     sku_status = BooleanField(default=True)  # True for Active and False for Inactive
     sku_base_qty = IntegerField(default=1)
     sku_pallet_qty = IntegerField(default=0)
-    # sku_expiry_date = DateField(default=date.today())
 
     # TO STRING METHOD
     def __str__(self):

@@ -60,7 +60,7 @@
                     <ul class="list-group list-group-horizontal m-2">
                         <li class="list-group-item">Invoice no : <span class="text-secondary">{{invoice_details.invoice_no}}<span></li>
                         <li class="list-group-item">Party Name: <span class="text-secondary">{{ invoice_details.invoice_party_name }}</span></li>
-                        <li class="list-group-item">Total Amount: <span class="text-secondary">{{ invoice_details.invoice_total_amount }}</span></li>
+                        <li class="list-group-item">Total Amount: <span class="text-secondary">₹ {{ invoice_details.invoice_total_amount }}</span></li>
                       </ul>
                 </h6>
               </div>
@@ -80,7 +80,6 @@
                         <th>S.K.U. Item Rate</th>
                         <th>S.K.U. Item Amount</th>
                         <th>Barcode</th>
-                        {% comment %} <th>Barcode</th> {% endcomment %}
                         <th>Status</th>
                         <th>Action</th> 
                       </tr>

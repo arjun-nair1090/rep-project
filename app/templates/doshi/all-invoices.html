@@ -78,46 +78,6 @@
                     </thead>
 
                     <tbody>
-                      {% comment %} {% for invoice, status in invoices %}
-                      <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ invoice.invoice_no }}</td>
-                        <td>{{ invoice.invoice_party_name }}</td>
-                        <td>{{ invoice.invoice_date }}</td>
-                        <td>{{ invoice.invoice_total_amount }}</td>
-                        
-                        {% if status == "COMPLETED" %}
-                        <td>
-                          <h6>
-                            <span class="badge rounded-pill badge-success"> Completed </span>
-                          </h6>
-                        </td>
-                        {% elif status == "EXTRA" %}
-                        <td>
-                          <h6>
-                            <span class="badge rounded-pill badge-warning"> EXTRA </span>
-                          </h6>
-                        </td>
-
-                        {% else %}
-                        <td>
-                          <h6>
-                            <span class="badge rounded-pill badge-danger"> Pending </span>
-                          </h6>
-                        </td>
-                        {% endif %}
-                        
-                        <td>
-                          <a
-                            href="invoice-details/{{invoice.invoice_no}}"
-                            class="btn btn-sm btn-info"
-                            role="button"
-                            >View</a
-                          >
-                          
-                        </td>
-                      </tr>
-                      {% endfor %} {% endcomment %}
                     </tbody>
                   </table>
                 </div>
@@ -198,7 +158,7 @@
     <!-- Page level custom scripts -->
     <script src="{% static 'assets/js/demo/datatables-demo.js' %}"></script>
 
-    
+    <!--Script for pagination > AJAX Request -->
     <script>
       $(document).ready(function () {
         $("#allInvoiceDataTable").DataTable({
@@ -208,9 +168,13 @@
           serverSide: true,
           deferRender: true, // deferred rendering for speed
           ordering: false,
+          searchBuilder: {
+            enterSearch: true
+          },
           ajax: {
                 "processing" : true,
                 "url" : "{% url 'api-all-invoices' %}",
+                "type": "GET"
               },
               columns:[
                   // { "data": "log_emp_id"},
@@ -218,39 +182,39 @@
                   { "data": "invoice_no"},
                   { "data": "invoice_party_name"},
                   { "data": "invoice_date"},
-                  { "data": "invoice_total_amount"},
-                  { "data" : "status"},
+                  { "data": "invoice_total_amount",
+                    render: function(amount){
+                        return `₹ ${amount}`;
+                    }
+                  },
+                  { 
+                    "data" : "status",
+                    render: function(status){
+                      console.log(status)
+                      var badge = "badge-danger";
+                      var invoice_status = "pending"
+                      if (status === "COMPLETED"){
+                        badge = "badge-success";
+                        invoice_status = "completed";
+                      }
+                      else if( status === "EXTRA"){
+                        badge = "badge-warning";
+                        invoice_status = "extra";
+                      }
+                      return `<span class="badge rounded-pill ${badge}">${invoice_status}</span>`;
+                  }
+                },
                   { "data": "invoice_no",
-                  render: function(data){
+                    render: function(data){
                     console.log(data);
-                    return `<a href="invoice-details/${data}" class="btn btn-sm btn-info" role="button">View</a>`
+                    return `<a href="invoice-details/${data}" class="btn btn-sm btn-info" role="button">View</a>`;
                   }
                 }
-                
-                  /*
-                  { 
-                    "data" "invoice_no",
-                    
-                    render: function(data){
-                      console.log(data)
-                      return `<button id="update-btn" onclick="updatefun('${data}')" data-uid="${data}" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#UpdateModal">View</Button>`
-                    },
-                  */
-                  /*
-                  {
-                    "data": "id",
-                    render: function(data){
-                      console.log(data)
-                      return `<button id="update-btn" onclick="updatefun('${data}')" data-uid="${data}" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#UpdateModal">View</Button>`
-                    },
-                    "orderable": false
-                  }
-                */
               ],
 
             })
             $(".dataTables_length select").addClass("form-select form-select-sm");
-      
+            $.fn.dataTable.ext.errMode = 'throw';
         });
       
     </script>
