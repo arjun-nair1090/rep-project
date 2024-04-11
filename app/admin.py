@@ -3,7 +3,7 @@ from .models import *
 
 
 class UserModelAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "role", "email", "password", "contact"]
+    list_display = ["id", "name", "role", "email", "contact"]
 
 
 class SKUItemsModelAdmin(admin.ModelAdmin):
@@ -45,3 +45,4 @@ admin.site.register(User, UserModelAdmin)
 admin.site.register(SKUItems, SKUItemsModelAdmin)
 admin.site.register(Invoice, InvoiceModelAdmin)
 admin.site.register(ByPassModel, ByPassModelAdmin)
+admin.site.register(Company)

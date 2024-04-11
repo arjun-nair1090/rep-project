@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env()
 
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = "74n_k5$38i^h(3)jesbsyua@1x3$a5hoyayl3%$i087to$ts@#"
 
 DEBUG = env("DEBUG")
 
@@ -57,14 +57,10 @@ WSGI_APPLICATION = "doshi.wsgi.application"
 
 
 DATABASES = {
-    "default": {
-        "ENGINE": env("DB_ENGINE"),
-        "NAME": env("DB_NAME"),
-        "ENFORCE_SCHEMA": False,
-        "CLIENT": {
-            "host": env("DB_HOST"),
-        },
-    },
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'sqlite3.db',
+    }
 }
 
 
@@ -106,12 +102,12 @@ else:
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-EMAIL_BACKEND = env("EMAIL_BACKEND")
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_PORT = env("EMAIL_PORT")
-EMAIL_USE_TLS = env("EMAIL_USE_TLS")
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+# EMAIL_BACKEND = env("EMAIL_BACKEND")
+# EMAIL_HOST = env("EMAIL_HOST")
+# EMAIL_PORT = env("EMAIL_PORT")
+# EMAIL_USE_TLS = env("EMAIL_USE_TLS")
+# EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
 INTERNAL_IPS = [
     "127.0.0.1",

@@ -101,6 +101,7 @@ def register(request):
 
 def login(request):
     if request.method == "POST":
+        print(request.POST)
 
         try:
             email = request.POST["loginEmail"]
